@@ -1,0 +1,68 @@
+(()=>{const D=window.D,B=document.body,$=s=>document.querySelector(s),pg=B.dataset.p||'';
+let lang=new URLSearchParams(location.search).get('lang');
+try{lang=lang||localStorage.getItem('lang')}catch(e){}
+lang=lang||(navigator.language.startsWith('fi')?'fi':'en');
+let f=B.dataset.f||'all',S;
+const t=k=>D.T[lang][k]||k,esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const ok=g=>f==='all'||g.includes(f);
+const IC={Unity:'unity',Claude:'claude',Grok:'grok',ChatGPT:'openai',Gemini:'googlegemini','Microsoft Copilot':'microsoftcopilot',Ollama:'ollama',Twitch:'twitch',YouTube:'youtube','Unreal Engine 4/5':'unrealengine','Unreal Engine 4':'unrealengine',Trello:'trello',OBS:'obsstudio','DaVinci Resolve':'davinciresolve','Affinity Photo':'affinityphoto','Affinity Designer':'affinitydesigner',Discord:'discord','macOS / iPadOS / iOS':'apple','Windows / Android':'android',unRAID:'unraid','Microsoft Excel':'microsoftexcel'};
+const ic=s=>s?`<img class="ic" src="https://cdn.simpleicons.org/${s}/e8ecf5" alt="" width="16" height="16" onerror="this.remove()">`:'';
+const slug=s=>String(s).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/&/g,' and ').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+window.slugify=slug;
+window.lgFail=i=>{const x=['webp','png','svg','jpg'],n=(+i.dataset.i||0)+1;if(n>=x.length){console.info('[logo missing] '+i.dataset.b+'.(webp|png|svg|jpg)');return i.remove()}i.dataset.i=n;i.src=i.dataset.b+'.'+x[n]};
+const lg=(f,c,al)=>f?`<img class="${c}" data-b="assets/partners/${f}" src="assets/partners/${f}.webp" alt="${esc(al||'')}" loading="lazy" onerror="lgFail(this)">`:'';
+const say=(m,o)=>{const e=$('#msg');if(e){e.className=o?'ok':'err';e.textContent=m}};
+const mail=pg==='c'?'krasmi.official@gmail.com':'micke.krasila@gmail.com';
+function yt(id){return `<button class="v" data-id="${id}" style="background-image:url(https://i.ytimg.com/vi/${id}/hqdefault.jpg)" aria-label="${t('play')}"></button>`}
+function draw(){
+document.documentElement.lang=lang;if(new URLSearchParams(location.search).get('full'))document.documentElement.classList.add('full');
+$('header').innerHTML=`<a class="lg" href="index.html?lang=${lang}" aria-label="Home"><img src="assets/logo.webp" alt="" width="34" height="34">krasmi</a><button class="mb" aria-expanded="false" aria-controls="nav" aria-label="${t('menu')}">☰</button><nav id="nav">${[['game.html','game','g'],['content.html','content','c'],['cv.html','cv','cv'],['contact.html','contact','contact']].map(([h,k,p])=>`<a href="${h}?lang=${lang}"${pg===p?' aria-current="page"':''}>${t(k)}</a>`).join('')}</nav>${pg==='c'?`<a class="btn hw" style="margin:0" href="mailto:${mail}">${t('work')}</a>`:''}<div class="lang" role="group" aria-label="Language">${['en','fi'].map(l=>`<button data-l="${l}" aria-pressed="${l===lang}">${l.toUpperCase()}</button>`).join('')}</div>`;
+$('footer').innerHTML=`<div class="fw"><div class="fa"><b class="fb">Micke “Krasmi” Krasila</b><p>${t('ftag')}</p><p>${t('synd')} <a href="https://wyrmscalesyndicate.com">${t('store')}</a></p></div><nav class="fn" aria-label="${t('menu')}">${[['game.html','game'],['content.html','content'],['cv.html','cv'],['contact.html','contact']].map(([h,k])=>`<a href="${h}?lang=${lang}">${t(k)}</a>`).join('')}</nav><div class="fs">${[['X','x.com/krasmithedragon','x'],['Instagram','instagram.com/krasilamicke','instagram'],['LinkedIn','linkedin.com/in/krasilamicke','linkedin']].map(([n,u,s])=>`<a href="https://${u}" rel="me noopener">${ic(s)}${n}</a>`).join('')}<a href="mailto:${mail}">${mail}</a></div></div><p class="fc">© ${new Date().getFullYear()} krasmi | Wyrmscale Syndicate</p>`;
+document.querySelectorAll('[data-i]').forEach(e=>e.textContent=t(e.dataset.i));
+document.querySelectorAll('[data-href]').forEach(e=>e.href=e.dataset.href+'?lang='+lang);
+const fl=$('#flt');if(fl)fl.innerHTML=['all','game','av','content','tech'].map(k=>`<button data-f="${k}" aria-pressed="${k===f}">${t(k)}</button>`).join('');
+const em=`<p class="m empty">${t('empty')}</p>`;const ex=$('#exp');if(ex)ex.innerHTML=(L=>L.length?L.join(''):em)(D.E.filter(e=>ok(e.g)).map((e,i)=>`<article>${lg(D.XL[e.o],'xl',e.o)}<h3>${esc(e.o)}</h3><p class="m">${e.d[lang]}</p><p${e.m?' class="ss"':''}>${e.s[lang]}</p>${e.k?`<ul class="ka">${e.k[lang].map(x=>`<li><b>${esc(x)}</b></li>`).join('')}</ul>`:e.h?`<p><span class="k">${e.h[lang]}</span></p>`:''}${e.m?`<p class="mt" id="m${i}" hidden>${e.m[lang]}</p>`:''}${e.m||e.cs?`<p class="np">${e.m?`<button class="btn sm" data-more="m${i}" aria-expanded="false" aria-controls="m${i}">${t('more2')}</button>`:''}${e.cs?`<a class="btn sm" href="${e.cs}.html?lang=${lang}">${t('case')}</a>`:''}</p>`:''}</article>`));
+const pr=$('#proj');if(pr)pr.innerHTML=D.P.filter(p=>!p.x).map(p=>`<div class="card">${p.img?`<img src="${p.img}" alt="${esc(p.n)}" loading="lazy" onerror="this.remove()">`:''}<h3>${p.n}</h3><p class="m">${t('role')}: ${p.r[lang]}</p><p>${p.s[lang]}</p><a class="btn" href="${p.k}.html?lang=${lang}">${t('more')}</a>${p.u?`<a class="btn" href="${p.u}">${t('itch')}</a>`:''}</div>`).join('');
+const cz=$('#cases');if(cz)cz.innerHTML=D.P.filter(p=>p.cs).map(p=>`<div class="card">${p.img?`<img src="${p.img}" alt="${esc(p.n)}" loading="lazy" onerror="this.remove()">`:''}<span class="k">${t('casetag')}</span><h3>${p.n}</h3><p class="m">${t('role')}: ${p.r[lang]}</p><p>${p.s[lang]}</p><a class="btn" href="${p.k}.html?lang=${lang}">${t('case')}</a></div>`).join('')+`<div class="card"><span class="k">${t('thtag')}</span><h3>AI pelituotannossa</h3><p class="m">${t('thmeta')}</p><p>${t('thsum')}</p><a class="btn" href="${D.THESIS}">${t('thbtn')}</a></div>`;
+const sk=$('#sk');if(sk){const L=D.SK.filter(s=>ok([].concat(s[1]))),ch=s=>`<span>${ic(IC[s[0]])}${s[0]}</span>`,A=L.filter(s=>s[2]==='ai'),O=L.filter(s=>s[2]!=='ai');sk.innerHTML=L.length?O.map(ch).join('')+(A.length?`<span class="aih">${t('aitools')}</span>`+A.map(ch).join('')+`<a class="btn sm" href="${D.THESIS}">${t('thesisb')}</a>`:''):em}
+const cl=$('#cl');if(cl)cl.innerHTML=D.C.map(c=>`<div class="card">${lg(D.LOGOS[c[0]]||slug(c[0]),'pl-logo','')}<h3>${c[0]}</h3>${c[1]?`<p class="m">${c[1]}</p>`:''}<p>${t(c[2])}</p></div>`).join('');
+const th=$('#th');if(th)th.innerHTML=D.TH.map(c=>`<div class="card"><h3>${c[0]}</h3><p>${c[1][lang]}</p></div>`).join('');
+const pj=$('#pj');if(pj){const i=+pj.dataset.n,p=D.P[i],sec=p.cs?p.cs.map(c=>`<h2>${c.h[lang]}</h2><p>${c.t[lang]}</p>`).join(''):`<h2>${t('dsc')}</h2><p>${p.d[lang]}</p><h2>${t('didw')}</h2><p>${p.w[lang]}</p><h2>${t('chal')}</h2><p>${p.c[lang]}</p>`,md=(p.media||[]).map(m=>`<figure><img src="${m.src}" alt="${esc(m.a[lang])}" loading="lazy" onerror="this.closest('figure').remove()"><figcaption class="m">${esc(m.a[lang])}</figcaption></figure>`).join('');
+pj.innerHTML=`<p><a class="btn" href="game.html?lang=${lang}">${t('back')}</a></p><h1>${p.n}</h1><p class="m">${t('role')}: ${p.r[lang]}${p.per?' · '+p.per[lang]:''}</p>${p.img?`<img class="ph" src="${p.img}" alt="${esc(p.n)}" onerror="this.remove()">`:''}${p.v?`<div class="grid">${yt(p.v)}</div>`:''}${sec}${md?`<h2>${t('gal')}</h2><div class="grid">${md}</div>`:''}<h2>${t('tuse')}</h2><div class="chips">${p.tl.map(x=>`<span>${ic(IC[x])}${x}</span>`).join('')}</div>${p.u?`<p><a class="btn" href="${p.u}">${t('itch')}</a></p>`:''}`;document.title=p.n+(p.cs?': Case Study':': Game Project')+' | Krasmi'}
+document.querySelectorAll('[data-ic]').forEach(e=>{if(!e.querySelector('.ic'))e.insertAdjacentHTML('afterbegin',ic(e.dataset.ic))});
+document.querySelectorAll('[data-status]').forEach(e=>{e.innerHTML=D.STATUS&&D.STATUS.on?`<span class="dot"></span><span><b>${t('open')}</b> · ${esc(D.STATUS[lang])}</span>`:''});
+const tlb=$('#tl');if(tlb){const Y=Math.max(2026,new Date().getFullYear()),N=(Y-2019)*12,mi=s=>{const n=new Date(),[y,m]=s==='now'?[n.getFullYear(),n.getMonth()+1]:s.split('-').map(Number);return(y-2020)*12+m-1},rows=D.TL.filter(x=>ok(x.g));
+tlb.style.setProperty('--n',Y-2019);
+tlb.innerHTML=rows.length?`<p class="tl-lg np">${['game','av','content','tech'].map(k=>`<span data-g="${k}"><i></i>${t(k)}</span>`).join('')}</p><div class="tl-ax">${Array.from({length:Y-2019},(_,i)=>`<span>${2020+i}</span>`).join('')}</div><ul class="tl">${rows.map(x=>{const e=D.E.find(v=>v.o===x.o);return `<li data-g="${x.p}"><div class="tl-l"><b>${esc(x.o)}</b><span class="m">${x.r[lang]}${e?' · '+e.d[lang]:''}</span></div><div class="tl-t">${x.b.map(([s,en])=>`<i style="left:${(mi(s)/N*100).toFixed(2)}%;width:${Math.max((mi(en)+1-mi(s))/N*100,1.2).toFixed(2)}%"></i>`).join('')}</div></li>`}).join('')}</ul>`:em}
+const sb=$('#sub');if(sb)sb.innerHTML=[['kit','kit'],['featured','feat'],['portfolio','ep'],['latest-s','latest'],['partners','cl'],['thanks','th'],['experience','exp']].map(([h,k])=>`<a href="#${h}">${t(k)}</a>`).join('');
+const cp=$('#cvpdf');if(cp)cp.href='assets/Micke-Krasila-CV-'+lang+'.pdf';const cf=$('#cvfull');if(cf)cf.href='assets/Micke-Krasila-CV-full-'+lang+'.pdf';
+document.documentElement.style.setProperty('--hh',$('header').offsetHeight+'px');
+const kb=$('#kitbtn');if(kb)kb.href='assets/media-kit-'+lang+'.pdf';
+const pf=$('#pf');if(pf)pf.innerHTML=D.PF.map(g=>`<h3>${t('g_'+g.k)}</h3>`+(g.i.length?`<ul class="pl${g.k==='short'?' sh':''}">${g.i.map(([n,u])=>`<li><span>${esc(n)}</span><a class="btn" href="${u}">${t('watch')}</a></li>`).join('')}</ul>`:`<p class="m empty">${t('empty')}</p>`)+(g.x?`<p>${g.x.map(([n,u])=>`<a class="btn" href="${u}">${n}</a>`).join('')}</p>`:'')).join('');
+const ct=$('#cvtel');if(ct&&D.PHONE)ct.innerHTML=` · <a href="tel:${D.PHONE.replace(/[^+\d]/g,'')}">${esc(D.PHONE)}</a>`;
+const tl=$('#tel');if(tl&&D.PHONE)tl.innerHTML=`<a class="btn" href="tel:${D.PHONE.replace(/[^+\d]/g,'')}">${t('tel')} ${esc(D.PHONE)}</a>`;
+const vs=$('#vids');if(vs&&!vs.innerHTML)vs.innerHTML=D.V.map((id,i)=>`<div>${yt(id)}<p class="m">${esc(D.VT[i])}</p></div>`).join('');
+}
+document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+if(b.classList.contains('mb')){const n=$('#nav'),o=n.classList.toggle('open');b.setAttribute('aria-expanded',o);return}
+if(b.dataset.copy){try{navigator.clipboard.writeText(b.dataset.copy).then(()=>say(t('copied'),1)).catch(()=>say(t('cfail')+' '+b.dataset.copy))}catch(x){say(t('cfail')+' '+b.dataset.copy)}return}
+if(b.id==='top'){scrollTo({top:0,behavior:'smooth'});return}
+if(b.dataset.more){const p=document.getElementById(b.dataset.more),o=p.hidden;p.hidden=!o;b.setAttribute('aria-expanded',o);b.textContent=t(o?'less':'more2');return}
+if(b.dataset.l){lang=b.dataset.l;try{localStorage.setItem('lang',lang)}catch(x){}draw()}
+else if(b.dataset.f){f=b.dataset.f;draw()}
+else if(b.dataset.id){const i=document.createElement('iframe');i.className='v';i.allowFullscreen=true;i.allow='autoplay;encrypted-media';i.src=`https://www.youtube-nocookie.com/embed/${b.dataset.id}?autoplay=1`;b.replaceWith(i)}});
+draw();
+if(innerWidth<=700)document.querySelectorAll('details.sec').forEach(d=>d.open=false);
+document.addEventListener('click',e=>{const x=e.target.closest('a[href^="#"]');if(x&&x.hash.length>1){const el=document.getElementById(x.hash.slice(1));if(el&&el.tagName==='DETAILS')el.open=true}});
+addEventListener('scroll',()=>{const b=$('#top');if(b)b.hidden=scrollY<700},{passive:true});addEventListener('resize',()=>{document.documentElement.style.setProperty('--hh',$('header').offsetHeight+'px')});
+{const A=D.ANALYTICS||{};if(A.provider&&A.id&&navigator.doNotTrack!=='1'&&!/^(localhost|127\.)/.test(location.hostname)){const s=document.createElement('script');s.defer=true;
+if(A.provider==='plausible'){s.src='https://plausible.io/js/script.js';s.dataset.domain=A.id}else if(A.provider==='fathom'){s.src='https://cdn.usefathom.com/script.js';s.dataset.site=A.id}else if(A.provider==='cloudflare'){s.src='https://static.cloudflareinsights.com/beacon.min.js';s.dataset.cfBeacon=JSON.stringify({token:A.id})}else s.src='';
+if(s.src)document.head.append(s)}}
+document.addEventListener('submit',e=>{const f=e.target;if(f.id!=='cf')return;e.preventDefault();const v=n=>f.elements[n].value.trim(),K=['name','email','msg'],er={name:v('name')?'':t('e_name'),email:/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v('email'))?'':t('e_email'),msg:v('msg').length>=10?'':t('e_msg')};
+K.forEach(k=>{$('#e-'+k).textContent=er[k];f.elements[k].setAttribute('aria-invalid',er[k]?'true':'false')});
+const bad=K.find(k=>er[k]);if(bad){say('',0);f.elements[bad].focus();return}
+const to=f.elements.topic.value==='content'?'krasmi.official@gmail.com':'micke.krasila@gmail.com';
+if(D.FORM){fetch(D.FORM,{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify({name:v('name'),email:v('email'),topic:f.elements.topic.value,message:v('msg')})}).then(r=>{if(!r.ok)throw 0;say(t('ok2'),1);f.reset()}).catch(()=>say(t('err')+' '+to+'.'))}
+else{say(t('ok')+' '+to+'.',1);location.href='mailto:'+to+'?subject='+encodeURIComponent('[krasmi.wyrmscalesyndicate.com] '+v('name'))+'&body='+encodeURIComponent(v('msg')+'\n\n'+v('name')+' <'+v('email')+'>')}});
+const lt=$('#latest');if(lt)[['UCq8-NV2ItRTj3i3vYLF1h4A&no_livestream&no_shorts=1','Krasmi','@krasmi'],['UCHVauLIH-JdSZnOBXsW9Ntw&no_shorts=1','Life of Krasmi','@lifeofkrasmi']].forEach(([q,n,h])=>{const d=document.createElement('div');lt.append(d);fetch('https://decapi.me/youtube/latest_video?id='+q).then(r=>r.text()).then(x=>{const m=x.match(/youtu\.be\/([\w-]{11})/);if(!m)throw 0;d.innerHTML=`<h3>${n}</h3>`+yt(m[1])+`<p class="m">${esc(x.split(' - https')[0])}</p>`}).catch(()=>{d.innerHTML=`<h3>${n}</h3><a class="btn" href="https://youtube.com/${h}">YouTube</a>`})});
+})();
